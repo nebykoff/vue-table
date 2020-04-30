@@ -15,12 +15,16 @@
           </button>
         </div>
       </div>
+      <select :v-model="productsPerPage" @change="changeProductsPerPage">
+        <option value="10">10 Per Page</option>
+        <option value="15">15 Per Page</option>
+        <option value="20">20 Per Page</option>
+      </select>
       <Pagination :interval="startFrom + 1 + '-' + endInterval"
         :total="totalProducts"
         @next="nextPage()"
         @prev="prevPage()"
       />
-      <button @click="changeProductsPerPage(5)"></button>
     </div>
     <div class="table-ui__table" v-if="!loadError">
       <table>
@@ -152,8 +156,8 @@ export default {
     updateProducts() {
       this.products = this.getProductsPiece(this.productsPerPage, this.startFrom);
     },
-    changeProductsPerPage(count) {
-      this.productsPerPage += count;
+    changeProductsPerPage(evt) {
+      this.productsPerPage = +evt.target.value;
       this.startFrom = 0;
       this.updateProducts();
     },
