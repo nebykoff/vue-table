@@ -1,0 +1,41 @@
+$clr_border: #EDEDED;
+$clr_accent: #00A11E;
+
+.table-ui {
+  &__title {
+    font-size: 32px;
+    font-weight: 600;
+    padding-bottom: 26px;
+    border-bottom: 1px solid $clr_border;
+  }
+  &__header {
+    margin: 16px 0;
+  }
+  &__sorting {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.product-props {
+  display: flex;
+}
+
+.product-prop {
+  margin: 0 3px;
+  padding:5px 8px;
+  border-radius: 2px;
+  border: none;
+  display: block;
+  background-color: transparent;
+  cursor: pointer;
+
+  &.active {
+    background-color: $clr_accent;
+    color: white;
+  }
+}
+
+.hide {
+  display: none;
+}
