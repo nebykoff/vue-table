@@ -18,6 +18,14 @@ export default new Vuex.Store({
       commit('updateProducts', products);
     },
   },
+  getters: {
+    totalProducts(state) {
+      return state.products.length;
+    },
+    getProductsPiece(state) {
+      return (perPage, startFrom) => state.products.slice(startFrom, startFrom + perPage);
+    },
+  },
   modules: {
   },
 });

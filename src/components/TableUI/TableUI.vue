@@ -15,6 +15,12 @@
           </button>
         </div>
       </div>
+      <Pagination :interval="startFrom + 1 + '-' + endInterval"
+        :total="totalProducts"
+        @next="nextPage()"
+        @prev="prevPage()"
+      />
+      <button @click="changeProductsPerPage(5)"></button>
     </div>
     <div class="table-ui__table" v-if="!loadError">
       <table>
@@ -41,17 +47,22 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { getProducts } from '@/api/request';
 import 'array.prototype.move';
+import Pagination from '@/components/Pagination/Pagination.vue';
 
 export default {
   name: 'Table',
+  components: {
+    Pagination,
+  },
   columns: [],
   created() {
     this.columns = [...this.initColumns];
     getProducts().then((products) => {
-      this.updateProducts(products);
+      this.loadProducts(products);
+      this.updateProducts();
     }).catch((error) => {
       this.loadError = error.error;
     });
@@ -59,6 +70,9 @@ export default {
   data() {
     return {
       loadError: '',
+      products: [],
+      productsPerPage: 10,
+      startFrom: 0,
       sortBy: 1, // todo Сделать перебор до первого элемента с show = true при инициализации
       initColumns: [
         {
@@ -101,7 +115,9 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['updateProducts']),
+    ...mapActions(
+      { loadProducts: 'updateProducts' },
+    ),
     changeSort(id) {
       this.sortBy = id;
 
@@ -121,11 +137,38 @@ export default {
     isHide(id) {
       return !this.columns.filter((col) => col.id === id)[0].show;
     },
+    prevPage() {
+      if (this.startFrom - this.productsPerPage >= 0) {
+        this.startFrom -= this.productsPerPage;
+        this.updateProducts();
+      }
+    },
+    nextPage() {
+      if (this.startFrom + this.productsPerPage < this.totalProducts) {
+        this.startFrom += this.productsPerPage;
+        this.updateProducts();
+      }
+    },
+    updateProducts() {
+      this.products = this.getProductsPiece(this.productsPerPage, this.startFrom);
+    },
+    changeProductsPerPage(count) {
+      this.productsPerPage += count;
+      this.startFrom = 0;
+      this.updateProducts();
+    },
   },
   computed: {
-    ...mapState({
-      products: 'products',
-    }),
+    ...mapGetters([
+      'totalProducts',
+      'getProductsPiece',
+    ]),
+    endInterval() {
+      if (this.startFrom + this.productsPerPage <= this.totalProducts) {
+        return this.startFrom + this.productsPerPage;
+      }
+      return this.totalProducts;
+    },
   },
 };
 </script>
