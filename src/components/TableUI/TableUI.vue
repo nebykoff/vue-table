@@ -145,6 +145,9 @@ export default {
       if (this.startFrom - this.productsPerPage >= 0) {
         this.startFrom -= this.productsPerPage;
         this.updateProducts();
+      } else if (this.startFrom - this.productsPerPage > this.productsPerPage * -1) {
+        this.startFrom = 0;
+        this.updateProducts();
       }
     },
     nextPage() {
@@ -158,7 +161,6 @@ export default {
     },
     changeProductsPerPage(evt) {
       this.productsPerPage = +evt.target.value;
-      this.startFrom = 0;
       this.updateProducts();
     },
   },
