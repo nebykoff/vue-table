@@ -25,6 +25,9 @@
         @next="nextPage()"
         @prev="prevPage()"
       />
+      <DropDownList v-slot="slotProps" :columns="initColumns">
+        {{ slotProps.selectedColumns }} columns selected
+      </DropDownList>
     </div>
     <div class="table-ui__table" v-if="!loadError">
       <table>
@@ -55,11 +58,13 @@ import { mapActions, mapGetters } from 'vuex';
 import { getProducts } from '@/api/request';
 import 'array.prototype.move';
 import Pagination from '@/components/Pagination/Pagination.vue';
+import DropDownList from '@/components/Common/DropDownList/DropDownList.vue';
+
 
 export default {
   name: 'Table',
   components: {
-    Pagination,
+    Pagination, DropDownList,
   },
   columns: [],
   created() {
