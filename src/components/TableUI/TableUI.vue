@@ -25,7 +25,7 @@
         @next="nextPage()"
         @prev="prevPage()"
       />
-      <DropDownList v-slot="slotProps" :columns="initColumns">
+      <DropDownList v-slot="slotProps" :columns="columns">
         {{ slotProps.selectedColumns }} columns selected
       </DropDownList>
     </div>
@@ -33,7 +33,10 @@
       <table>
         <thead>
           <tr>
-            <th v-for="col in columns" :key="col.id" :class="[!col.show ? 'hide' : '']">
+            <th v-for="(col, idx) in columns"
+                :key="col.id"
+                @click="sort(idx, col.name)"
+                :class="[!col.show ? 'hide' : '', !idx ? 'sort' : '']">
               {{ col.title }}
             </th>
           </tr>
@@ -83,6 +86,7 @@ export default {
       productsPerPage: 10,
       startFrom: 0,
       sortBy: 1, // todo Сделать перебор до первого элемента с show = true при инициализации
+      sortASC: false,
       initColumns: [
         {
           id: 1,
@@ -129,6 +133,7 @@ export default {
     ),
     changeSort(id) {
       this.sortBy = id;
+      this.sortASC = false;
 
       // Возвращаем на место первый элемент согласно его id
       this.columns.move(0, this.columns[0].id - 1);
@@ -167,6 +172,23 @@ export default {
     changeProductsPerPage(evt) {
       this.productsPerPage = +evt.target.value;
       this.updateProducts();
+    },
+    sort(idx, colName) {
+      // Сортировка срабатывает только при клике по первой колонке
+      if (!idx) {
+        // Для чередование сортировки возростания/убывания
+        let result = 1;
+        if (!this.sortASC) {
+          result *= -1;
+        }
+
+        // Сортировка
+        this.products.sort((prev, next) => {
+          if (prev[colName] < next[colName]) return result * -1;
+          return result;
+        });
+        this.sortASC = !this.sortASC;
+      }
     },
   },
   computed: {

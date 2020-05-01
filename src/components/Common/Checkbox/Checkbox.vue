@@ -3,7 +3,8 @@
     <span>
       <slot></slot>
     </span>
-    <input type="checkbox" v-bind="$attrs"/><span class="checkmark"></span>
+    <input type="checkbox" v-bind="$attrs" @change="$emit('change')"/>
+    <span class="checkmark"></span>
   </label>
 </template>
 
@@ -29,6 +30,7 @@ $clr_accent: #00A11E;
     display: block;
     line-height: 24px;
     padding-left: 13px;
+    white-space: nowrap;
   }
 
   /* Hide the browser's default checkbox */

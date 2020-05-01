@@ -6,7 +6,10 @@
     <div class="drop-down" v-show="showList">
       <ul>
         <li v-for="col in columns" :key="col.id">
-          <Checkbox :name="col.name">{{ col.title }}</Checkbox>
+          <Checkbox :name="col.name" :checked="col.show ? 'checked' : ''"
+                    @change="col.show = !col.show">
+            {{ col.title }}
+          </Checkbox>
         </li>
       </ul>
     </div>
@@ -34,7 +37,13 @@ export default {
   },
   computed: {
     selectedColumns() {
-      return this.columns.length;
+      let visibleCols = 0;
+      this.columns.forEach((col) => {
+        if (col.show) {
+          visibleCols += 1;
+        }
+      });
+      return visibleCols;
     },
   },
 };
@@ -44,9 +53,23 @@ export default {
   .list {
     position: relative;
 
+    ul {
+      padding: 0;
+      margin: 0;
+
+      li {
+        display: block;
+      }
+    }
+
     .drop-down {
+      padding: 20px 17px;
       position: absolute;
-      border: 1px solid magenta;
+      background: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+      border-radius: 4px;
+      max-height: 243px;
+      overflow-y: auto;
     }
   }
 </style>
