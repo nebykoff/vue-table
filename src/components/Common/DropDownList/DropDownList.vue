@@ -7,7 +7,7 @@
       <ul>
         <li v-for="col in columns" :key="col.id">
           <Checkbox :name="col.name" :checked="col.show ? 'checked' : ''"
-                    @change="col.show = !col.show">
+                    @change="$emit('colShowChanged', col)">
             {{ col.title }}
           </Checkbox>
         </li>

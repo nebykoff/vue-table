@@ -8,7 +8,7 @@
         Sorting by:
         <div class="product-props" v-if="initColumns">
           <button :class="['product-prop',
-          col.id === sortBy ? 'active' : '', isHide(col.id) ? 'hide' : '']"
+          col.id === getSortingCol().id ? 'active' : '', isHide(col.id) ? 'hide' : '']"
                v-for="col in initColumns" :key="col.id"
                @click="changeSort(col.id)">
             {{ col.title }}
@@ -25,7 +25,7 @@
         @next="nextPage()"
         @prev="prevPage()"
       />
-      <DropDownList v-slot="slotProps" :columns="columns">
+      <DropDownList v-slot="slotProps" :columns="columns" @colShowChanged="onColShowChanged">
         {{ slotProps.selectedColumns }} columns selected
       </DropDownList>
     </div>
@@ -33,10 +33,11 @@
       <table>
         <thead>
           <tr>
-            <th v-for="(col, idx) in columns"
+            <th v-for="col in columns"
                 :key="col.id"
-                @click="sort(idx, col.name)"
-                :class="[!col.show ? 'hide' : '', !idx ? 'sort' : '']">
+                @click="onTableHeadClick(col.id)"
+                :class="[!col.show ? 'hide' : '',
+                col.id === getSortingCol().id ? 'sort' : '']">
               {{ col.title }}
             </th>
           </tr>
@@ -69,7 +70,6 @@ export default {
   components: {
     Pagination, DropDownList,
   },
-  columns: [],
   created() {
     this.columns = [...this.initColumns];
     getProducts().then((products) => {
@@ -83,10 +83,10 @@ export default {
     return {
       loadError: '',
       products: [],
+      columns: [],
       productsPerPage: 10,
       startFrom: 0,
-      sortBy: 1, // todo Сделать перебор до первого элемента с show = true при инициализации
-      sortASC: false,
+      sortASC: true,
       initColumns: [
         {
           id: 1,
@@ -132,9 +132,6 @@ export default {
       { loadProducts: 'updateProducts' },
     ),
     changeSort(id) {
-      this.sortBy = id;
-      this.sortASC = false;
-
       // Возвращаем на место первый элемент согласно его id
       this.columns.move(0, this.columns[0].id - 1);
 
@@ -147,6 +144,7 @@ export default {
       });
       // Перемещаем колонку на первое место
       this.columns.move(colIndex, 0);
+      this.sort();
     },
     isHide(id) {
       return !this.columns.filter((col) => col.id === id)[0].show;
@@ -166,29 +164,49 @@ export default {
         this.updateProducts();
       }
     },
+    onColShowChanged(col) {
+      // eslint-disable-next-line
+      col.show = !col.show;
+      this.sort();
+    },
     updateProducts() {
       this.products = this.getProductsPiece(this.productsPerPage, this.startFrom);
+      this.sort();
     },
     changeProductsPerPage(evt) {
       this.productsPerPage = +evt.target.value;
       this.updateProducts();
     },
-    sort(idx, colName) {
+    onTableHeadClick(id) {
       // Сортировка срабатывает только при клике по первой колонке
-      if (!idx) {
-        // Для чередование сортировки возростания/убывания
-        let result = 1;
-        if (!this.sortASC) {
-          result *= -1;
-        }
-
-        // Сортировка
-        this.products.sort((prev, next) => {
-          if (prev[colName] < next[colName]) return result * -1;
-          return result;
-        });
+      if (id === this.getSortingCol().id) {
         this.sortASC = !this.sortASC;
+        this.sort();
       }
+    },
+    // Ищет первую не скрытую колонку
+    getSortingCol() {
+      const sortingCol = this.columns.filter((col) => col.show)[0];
+
+      // Если все скрыты - то выдаем первую
+      if (!sortingCol) {
+        return this.columns[0];
+      }
+      return sortingCol;
+    },
+    sort() {
+      const colName = this.getSortingCol().name;
+      // Для чередование сортировки возростания/убывания
+      let result = 1;
+      if (!this.sortASC) {
+        result *= -1;
+      }
+
+      // Сортировка
+      this.products.sort((prev, next) => {
+        if (prev[colName] < next[colName]) return result * -1;
+        return result;
+      });
     },
   },
   computed: {
