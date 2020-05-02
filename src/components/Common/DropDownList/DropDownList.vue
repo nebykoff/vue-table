@@ -5,6 +5,12 @@
     </button>
     <div class="drop-down" v-show="showList">
       <ul>
+        <li>
+          <Checkbox :checked="isAllColsSelected ? 'checked' : ''"
+                    @change="changeAllColsVisibility($event.target.checked)">
+            <strong>Select All</strong>
+          </Checkbox>
+        </li>
         <li v-for="col in columns" :key="col.id">
           <Checkbox :name="col.name" :checked="col.show ? 'checked' : ''"
                     @change="$emit('colShowChanged', col)">
@@ -35,6 +41,14 @@ export default {
       showList: false,
     };
   },
+  methods: {
+    changeAllColsVisibility(state) {
+      this.columns.forEach((col) => {
+        // eslint-disable-next-line
+        col.show = state;
+      });
+    },
+  },
   computed: {
     selectedColumns() {
       let visibleCols = 0;
@@ -44,6 +58,9 @@ export default {
         }
       });
       return visibleCols;
+    },
+    isAllColsSelected() {
+      return this.columns.length === this.selectedColumns;
     },
   },
 };

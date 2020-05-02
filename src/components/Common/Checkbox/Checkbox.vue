@@ -3,7 +3,7 @@
     <span>
       <slot></slot>
     </span>
-    <input type="checkbox" v-bind="$attrs" @change="$emit('change')"/>
+    <input type="checkbox" v-bind="$attrs" @change="$emit('change', $event)"/>
     <span class="checkmark"></span>
   </label>
 </template>
