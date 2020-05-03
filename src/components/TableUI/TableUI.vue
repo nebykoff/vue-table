@@ -15,6 +15,9 @@
           </button>
         </div>
       </div>
+      <button :disabled="!selectedProducts.length" @click="onDeleteSelected">
+        Delete {{ selectedProducts.length ? `(${selectedProducts.length})` : ''}}
+      </button>
       <select :v-model="productsPerPage" @change="changeProductsPerPage">
         <option value="10">10 Per Page</option>
         <option value="15">15 Per Page</option>
@@ -35,6 +38,9 @@
       <table>
         <thead>
           <tr>
+          <th>
+            <Checkbox/>
+          </th>
             <th v-for="col in columns"
                 :key="col.id"
                 @click="onTableHeadClick(col.id)"
@@ -46,7 +52,14 @@
         </thead>
         <tbody>
           <tr v-for="product in products" :key="product.id">
-            <td v-for="col in columns" :key="col.id" :class="[!col.show ? 'hide' : '']">
+            <td>
+              <Checkbox
+              @change="onProductRowClick(product.id)"
+              :checked="isProductSelected(product.id) ? 'checked' : ''"/>
+            </td>
+            <td v-for="col in columns" :key="col.id"
+              @click="onProductRowClick(product.id)"
+              :class="[!col.show ? 'hide' : '']">
               {{ product[col.name] }}
             </td>
           </tr>
@@ -65,12 +78,13 @@ import { getProducts } from '@/api/request';
 import 'array.prototype.move';
 import Pagination from '@/components/Pagination/Pagination.vue';
 import DropDownList from '@/components/Common/DropDownList/DropDownList.vue';
+import Checkbox from '@/components/Common/Checkbox/Checkbox.vue';
 
 
 export default {
   name: 'Table',
   components: {
-    Pagination, DropDownList,
+    Pagination, DropDownList, Checkbox,
   },
   created() {
     this.columns = [...this.initColumns];
@@ -90,6 +104,7 @@ export default {
       productsPerPage: 10,
       startFrom: 0,
       sortASC: true,
+      selectedProducts: [],
       initColumns: [
         {
           id: 1,
@@ -202,6 +217,20 @@ export default {
     sort() {
       this.sortProducts({ colName: this.getSortingCol().name, sortASC: this.sortASC });
       this.updateProducts();
+    },
+    isProductSelected(id) {
+      return this.selectedProducts.includes(id);
+    },
+    onProductRowClick(id) {
+      if (this.isProductSelected(id)) {
+        const index = this.selectedProducts.indexOf(id);
+        this.selectedProducts.splice(index, 1);
+      } else {
+        this.selectedProducts.push(id);
+      }
+    },
+    onDeleteSelected() {
+      
     },
   },
   computed: {

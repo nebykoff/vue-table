@@ -8,13 +8,26 @@ $clr_accent: #00A11E;
     padding-bottom: 26px;
     border-bottom: 1px solid $clr_border;
   }
+
   &__header {
     margin: 16px 0;
     display: flex;
+    flex-wrap: wrap;
   }
+
   &__sorting {
     display: flex;
     align-items: center;
+  }
+
+  table {
+    tr {
+      cursor: pointer;
+    }
+
+    tr:hover {
+      background-color: #dadada;
+    }
   }
 }
 
@@ -23,7 +36,6 @@ $clr_accent: #00A11E;
 }
 
 .product-prop {
-  margin: 0 3px;
   padding:5px 8px;
   border-radius: 2px;
   border: none;
