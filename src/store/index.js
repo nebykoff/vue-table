@@ -9,13 +9,29 @@ export default new Vuex.Store({
     products: [],
   },
   mutations: {
-    updateProducts(state, products) {
+    loadProducts(state, products) {
       state.products = products;
+    },
+    sortProducts(state, { colName, sortASC }) {
+      // Для чередования способа сортировка возростание/убывание
+      let result = 1;
+      if (!sortASC) {
+        result *= -1;
+      }
+
+      // Сортировка
+      state.products = state.products.sort((prev, next) => {
+        if (prev[colName] < next[colName]) return result * -1;
+        return result;
+      });
     },
   },
   actions: {
-    updateProducts({ commit }, products) {
-      commit('updateProducts', products);
+    loadProducts({ commit }, products) {
+      commit('loadProducts', products);
+    },
+    sortProducts({ commit }, { colName, sortASC }) {
+      commit('sortProducts', { colName, sortASC });
     },
   },
   getters: {

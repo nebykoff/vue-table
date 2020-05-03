@@ -10,7 +10,7 @@
           <button :class="['product-prop',
           col.id === getSortingCol().id ? 'active' : '', isHide(col.id) ? 'hide' : '']"
                v-for="col in initColumns" :key="col.id"
-               @click="changeSort(col.id)">
+               @click="changeSortCol(col.id)">
             {{ col.title }}
           </button>
         </div>
@@ -25,7 +25,9 @@
         @next="nextPage()"
         @prev="prevPage()"
       />
-      <DropDownList v-slot="slotProps" :columns="columns" @colShowChanged="onColShowChanged">
+      <DropDownList v-slot="slotProps" :columns="columns"
+                    @onSelectAll="onSelectAll"
+                    @colShowChanged="onColShowChanged">
         {{ slotProps.selectedColumns }} columns selected
       </DropDownList>
     </div>
@@ -74,6 +76,7 @@ export default {
     this.columns = [...this.initColumns];
     getProducts().then((products) => {
       this.loadProducts(products);
+      this.sort();
       this.updateProducts();
     }).catch((error) => {
       this.loadError = error.error;
@@ -129,9 +132,9 @@ export default {
   },
   methods: {
     ...mapActions(
-      { loadProducts: 'updateProducts' },
+      ['loadProducts', 'sortProducts'],
     ),
-    changeSort(id) {
+    changeSortCol(id) {
       // Возвращаем на место первый элемент согласно его id
       this.columns.move(0, this.columns[0].id - 1);
 
@@ -169,9 +172,11 @@ export default {
       col.show = !col.show;
       this.sort();
     },
+    onSelectAll() {
+      this.sort();
+    },
     updateProducts() {
       this.products = this.getProductsPiece(this.productsPerPage, this.startFrom);
-      this.sort();
     },
     changeProductsPerPage(evt) {
       this.productsPerPage = +evt.target.value;
@@ -195,18 +200,8 @@ export default {
       return sortingCol;
     },
     sort() {
-      const colName = this.getSortingCol().name;
-      // Для чередование сортировки возростания/убывания
-      let result = 1;
-      if (!this.sortASC) {
-        result *= -1;
-      }
-
-      // Сортировка
-      this.products.sort((prev, next) => {
-        if (prev[colName] < next[colName]) return result * -1;
-        return result;
-      });
+      this.sortProducts({ colName: this.getSortingCol().name, sortASC: this.sortASC });
+      this.updateProducts();
     },
   },
   computed: {

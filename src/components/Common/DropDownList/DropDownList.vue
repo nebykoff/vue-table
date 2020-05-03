@@ -47,6 +47,7 @@ export default {
         // eslint-disable-next-line
         col.show = state;
       });
+      this.$emit('onSelectAll');
     },
   },
   computed: {
