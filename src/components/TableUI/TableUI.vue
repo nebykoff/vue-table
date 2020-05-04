@@ -15,7 +15,8 @@
           </button>
         </div>
       </div>
-      <button :disabled="!selectedProducts.length" @click="deleteProducts(selectedProducts)">
+      <button :disabled="!selectedProducts.length"
+              @click="onDelete($event.target, selectedProducts)">
         Delete {{ selectedProducts.length ? `(${selectedProducts.length})` : ''}}
       </button>
       <select :v-model="productsPerPage" @change="changeProductsPerPage">
@@ -63,14 +64,21 @@
               {{ product[col.name] }}
             </td>
             <td>
-              <button @click="deleteProducts([product.id], false)">delete</button>
+              <button @click="onDelete($event.target, [product.id])">delete</button>
             </td>
           </tr>
         </tbody>
       </table>
+      <ConfirmBox :params="confirmBoxParams" v-show="confirmBoxParams.show"
+                  @onDeleteConfirmed="onDeleteConfirmed">
+        Are you sure want to <strong>delete item</strong>?
+      </ConfirmBox>
     </div>
     <div v-else>
       Ошибка загрузки: {{ loadError }}
+    </div>
+    <div class="loader" v-show="loading">
+      <img src="@/assets/loader.svg" alt="">
     </div>
   </div>
 </template>
@@ -82,25 +90,33 @@ import 'array.prototype.move';
 import Pagination from '@/components/Pagination/Pagination.vue';
 import DropDownList from '@/components/Common/DropDownList/DropDownList.vue';
 import Checkbox from '@/components/Common/Checkbox/Checkbox.vue';
+import ConfirmBox from '@/components/Common/ConfirmBox/ConfirmBox.vue';
 
 
 export default {
   name: 'Table',
   components: {
-    Pagination, DropDownList, Checkbox,
+    ConfirmBox,
+    Pagination,
+    DropDownList,
+    Checkbox,
   },
   created() {
     this.columns = [...this.initColumns];
+    this.loading = true;
     getProducts().then((products) => {
       this.loadProducts(products);
       this.sort();
       this.updateProducts();
     }).catch((error) => {
       this.loadError = error.error;
+    }).finally(() => {
+      this.loading = false;
     });
   },
   data() {
     return {
+      loading: false,
       loadError: '',
       products: [],
       columns: [],
@@ -108,6 +124,11 @@ export default {
       startFrom: 0,
       sortASC: true,
       selectedProducts: [],
+      confirmBoxParams: {
+        show: false,
+        parentRect: null,
+      },
+      productsToDelete: [],
       initColumns: [
         {
           id: 1,
@@ -232,15 +253,30 @@ export default {
         this.selectedProducts.push(id);
       }
     },
-    deleteProducts(ids, clearSelected = true) {
+    deleteProducts(ids) {
+      this.loading = true;
       this.delProducts(ids).then(() => {
-        if (clearSelected) {
+        if (ids.length === 1) {
+          const delProdIndex = this.selectedProducts.indexOf(ids[0]);
+          this.selectedProducts.splice(delProdIndex, 1);
+        } else {
           this.selectedProducts = [];
         }
+
         this.updateProducts();
       }).catch((e) => {
         console.log(e);
+      }).finally(() => {
+        this.loading = false;
       });
+    },
+    onDelete(button, ids) {
+      this.productsToDelete = ids;
+      this.confirmBoxParams.parentRect = button.getBoundingClientRect();
+      this.confirmBoxParams.show = true;
+    },
+    onDeleteConfirmed() {
+      this.deleteProducts(this.productsToDelete);
     },
     selectAllProducts(checked) {
       if (checked) {
