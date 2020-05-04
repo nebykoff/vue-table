@@ -15,7 +15,7 @@
           </button>
         </div>
       </div>
-      <button :disabled="!selectedProducts.length" @click="onDeleteSelectedProducts">
+      <button :disabled="!selectedProducts.length" @click="deleteProducts(selectedProducts)">
         Delete {{ selectedProducts.length ? `(${selectedProducts.length})` : ''}}
       </button>
       <select :v-model="productsPerPage" @change="changeProductsPerPage">
@@ -29,7 +29,7 @@
         @prev="prevPage()"
       />
       <DropDownList v-slot="slotProps" :columns="columns"
-                    @onSelectAll="onSelectAll"
+                    @onSelectAll="onSelectAllCols"
                     @colShowChanged="onColShowChanged">
         {{ slotProps.selectedColumns }} columns selected
       </DropDownList>
@@ -39,7 +39,7 @@
         <thead>
           <tr>
           <th>
-            <Checkbox/>
+            <Checkbox @change="selectAllProducts($event.target.checked)"/>
           </th>
             <th v-for="col in columns"
                 :key="col.id"
@@ -63,7 +63,7 @@
               {{ product[col.name] }}
             </td>
             <td>
-              <button @click="onDeleteProduct(product.id)">delete</button>
+              <button @click="deleteProducts([product.id], false)">delete</button>
             </td>
           </tr>
         </tbody>
@@ -190,7 +190,7 @@ export default {
       col.show = !col.show;
       this.sort();
     },
-    onSelectAll() {
+    onSelectAllCols() {
       this.sort();
     },
     updateProducts() {
@@ -232,20 +232,31 @@ export default {
         this.selectedProducts.push(id);
       }
     },
-    onDeleteSelectedProducts() {
-      this.delProducts(this.selectedProducts).then(() => {
-        this.selectedProducts = [];
+    deleteProducts(ids, clearSelected = true) {
+      this.delProducts(ids).then(() => {
+        if (clearSelected) {
+          this.selectedProducts = [];
+        }
         this.updateProducts();
       }).catch((e) => {
         console.log(e);
       });
     },
-    onDeleteProduct(id) {
-      this.delProducts([id]).then(() => {
-        this.updateProducts();
-      }).catch((e) => {
-        console.log(e);
-      });
+    selectAllProducts(checked) {
+      if (checked) {
+        this.products.forEach((product) => {
+          if (!this.selectedProducts.includes(product.id)) {
+            this.selectedProducts.push(product.id);
+          }
+        });
+      } else {
+        this.products.forEach((product) => {
+          if (this.selectedProducts.includes(product.id)) {
+            const idx = this.selectedProducts.indexOf(product.id);
+            this.selectedProducts.splice(idx, 1);
+          }
+        });
+      }
     },
   },
   computed: {

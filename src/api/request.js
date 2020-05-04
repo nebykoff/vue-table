@@ -3,8 +3,7 @@ import products from './products.json';
 
 /** True = 65%, False = 35% */
 const rejectByChance = () => {
-  return 0;
-  // return Math.random() <= 0.35;
+  return Math.random() <= 0.35;
 };
 
 /** Emulate get request */
@@ -30,6 +29,6 @@ export const deleteProducts = () => new Promise((resolve, reject) => {
   const delay = parseInt(Math.random() * 1000);
   setTimeout(() => {
     resolve({ message: 'deleted' });
-  }, 0);
+  }, delay);
 });
 /* eslint-enable */

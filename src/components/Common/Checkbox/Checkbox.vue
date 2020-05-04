@@ -52,6 +52,7 @@ $clr_accent: #00A11E;
     width: 14px;
     /*border-radius: 8px;*/
     border: solid 1px $clr_accent;
+    box-sizing: border-box;
 
   /* Create the custom-checkbox__checkmark/indicator (hidden when not checked) */
   &:after {
@@ -65,6 +66,7 @@ $clr_accent: #00A11E;
      border: solid white;
      border-width: 1px 1px 0 0;
      transform: rotate(135deg);
+     box-sizing: border-box;
    }
   }
 
