@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-// import { getProducts, deleteProducts } from '@/api/request';
+import { deleteProducts } from '@/api/request';
 
 Vue.use(Vuex);
 
@@ -25,6 +25,12 @@ export default new Vuex.Store({
         return result;
       });
     },
+    delProducts(state, { productsList }) {
+      productsList.forEach((id) => {
+        const delProductIdx = state.products.findIndex((product) => product.id === id);
+        state.products.splice(delProductIdx, 1);
+      });
+    },
   },
   actions: {
     loadProducts({ commit }, products) {
@@ -32,6 +38,14 @@ export default new Vuex.Store({
     },
     sortProducts({ commit }, { colName, sortASC }) {
       commit('sortProducts', { colName, sortASC });
+    },
+    async delProducts({ commit }, productsList) {
+      try {
+        await deleteProducts();
+        commit('delProducts', { productsList });
+      } catch (e) {
+        console.log(e);
+      }
     },
   },
   getters: {

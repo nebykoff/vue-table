@@ -15,7 +15,7 @@
           </button>
         </div>
       </div>
-      <button :disabled="!selectedProducts.length" @click="onDeleteSelected">
+      <button :disabled="!selectedProducts.length" @click="onDeleteSelectedProducts">
         Delete {{ selectedProducts.length ? `(${selectedProducts.length})` : ''}}
       </button>
       <select :v-model="productsPerPage" @change="changeProductsPerPage">
@@ -61,6 +61,9 @@
               @click="onProductRowClick(product.id)"
               :class="[!col.show ? 'hide' : '']">
               {{ product[col.name] }}
+            </td>
+            <td>
+              <button @click="onDeleteProduct(product.id)">delete</button>
             </td>
           </tr>
         </tbody>
@@ -147,7 +150,7 @@ export default {
   },
   methods: {
     ...mapActions(
-      ['loadProducts', 'sortProducts'],
+      ['loadProducts', 'sortProducts', 'delProducts'],
     ),
     changeSortCol(id) {
       // Возвращаем на место первый элемент согласно его id
@@ -229,8 +232,20 @@ export default {
         this.selectedProducts.push(id);
       }
     },
-    onDeleteSelected() {
-      
+    onDeleteSelectedProducts() {
+      this.delProducts(this.selectedProducts).then(() => {
+        this.selectedProducts = [];
+        this.updateProducts();
+      }).catch((e) => {
+        console.log(e);
+      });
+    },
+    onDeleteProduct(id) {
+      this.delProducts([id]).then(() => {
+        this.updateProducts();
+      }).catch((e) => {
+        console.log(e);
+      });
     },
   },
   computed: {
