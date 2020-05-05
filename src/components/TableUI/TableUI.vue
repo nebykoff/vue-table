@@ -7,12 +7,12 @@
       <div class="table-ui__sorting">
         <strong>Sorting by:</strong>
         <div class="product-props" v-if="initColumns">
-          <button :class="['product-prop',
+          <Button :class="['product-prop',
           col.id === getSortingCol().id ? 'active' : '', isHide(col.id) ? 'hide' : '']"
                v-for="col in initColumns" :key="col.id"
                @click="changeSortCol(col.id)">
             {{ col.title }}
-          </button>
+          </Button>
         </div>
       </div>
       <Button :disabled="!selectedProducts.length"
@@ -66,10 +66,10 @@
               {{ product[col.name] }}
             </td>
             <td>
-              <button class="button button--del"
+              <Button class="button--del"
                       @click="onDelete($event.target, [product.id])">
                 <img  src="@/assets/img/rubbish-bin.png"> delete
-              </button>
+              </Button>
             </td>
           </tr>
         </tbody>
@@ -136,6 +136,21 @@ export default {
         parentRect: null,
       },
       productsToDelete: [],
+      xxx: 111,
+      productsPerPageData: [
+        {
+          label: '10 Per Page',
+          value: 10,
+        },
+        {
+          label: '15 Per Page',
+          value: 15,
+        },
+        {
+          label: '20 Per Page',
+          value: 20,
+        },
+      ],
       initColumns: [
         {
           id: 1,
@@ -225,6 +240,8 @@ export default {
       this.products = this.getProductsPiece(this.productsPerPage, this.startFrom);
     },
     changeProductsPerPage(evt) {
+      console.log('xxx');
+
       this.productsPerPage = +evt.target.value;
       this.updateProducts();
     },
