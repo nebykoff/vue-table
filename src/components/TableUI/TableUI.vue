@@ -5,7 +5,7 @@
     </div>
     <div class="table-ui__header">
       <div class="table-ui__sorting">
-        Sorting by:
+        <strong>Sorting by:</strong>
         <div class="product-props" v-if="initColumns">
           <button :class="['product-prop',
           col.id === getSortingCol().id ? 'active' : '', isHide(col.id) ? 'hide' : '']"
@@ -15,10 +15,10 @@
           </button>
         </div>
       </div>
-      <button :disabled="!selectedProducts.length"
+      <Button :disabled="!selectedProducts.length"
               @click="onDelete($event.target, selectedProducts)">
         Delete {{ selectedProducts.length ? `(${selectedProducts.length})` : ''}}
-      </button>
+      </Button>
       <select :v-model="productsPerPage" @change="changeProductsPerPage">
         <option value="10">10 Per Page</option>
         <option value="15">15 Per Page</option>
@@ -39,15 +39,17 @@
       <table>
         <thead>
           <tr>
-          <th>
-            <Checkbox @change="selectAllProducts($event.target.checked)"/>
-          </th>
+            <th>
+              <Checkbox @change="selectAllProducts($event.target.checked)"/>
+            </th>
             <th v-for="col in columns"
                 :key="col.id"
                 @click="onTableHeadClick(col.id)"
                 :class="[!col.show ? 'hide' : '',
                 col.id === getSortingCol().id ? 'sort' : '']">
               {{ col.title }}
+            </th>
+            <th>
             </th>
           </tr>
         </thead>
@@ -64,7 +66,10 @@
               {{ product[col.name] }}
             </td>
             <td>
-              <button @click="onDelete($event.target, [product.id])">delete</button>
+              <button class="button button--del"
+                      @click="onDelete($event.target, [product.id])">
+                <img  src="@/assets/img/rubbish-bin.png"> delete
+              </button>
             </td>
           </tr>
         </tbody>
@@ -78,7 +83,7 @@
       Ошибка загрузки: {{ loadError }}
     </div>
     <div class="loader" v-show="loading">
-      <img src="@/assets/loader.svg" alt="">
+      <img src="@/assets/img/loader.svg" alt="">
     </div>
   </div>
 </template>
@@ -91,11 +96,13 @@ import Pagination from '@/components/Pagination/Pagination.vue';
 import DropDownList from '@/components/Common/DropDownList/DropDownList.vue';
 import Checkbox from '@/components/Common/Checkbox/Checkbox.vue';
 import ConfirmBox from '@/components/Common/ConfirmBox/ConfirmBox.vue';
+import Button from '@/components/Common/Button/Button.vue';
 
 
 export default {
   name: 'Table',
   components: {
+    Button,
     ConfirmBox,
     Pagination,
     DropDownList,

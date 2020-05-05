@@ -89,5 +89,10 @@ export default {
       max-height: 243px;
       overflow-y: auto;
     }
+
+    .checkbox {
+      padding-left: 14px;
+      margin-bottom: 17px;
+    }
   }
 </style>

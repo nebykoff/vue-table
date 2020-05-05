@@ -18,10 +18,8 @@ export default {
 <style lang="scss">
 /* Customize the label (the custom-checkbox) */
 .checkbox {
-  display: block;
+  display: inline-block;
   position: relative;
-  padding-left: 14px;
-  margin-bottom: 17px;
   user-select: none;
   cursor: pointer;
 
