@@ -16,7 +16,6 @@ export default {
 </script>
 
 <style lang="scss">
-$clr_accent: #00A11E;
 /* Customize the label (the custom-checkbox) */
 .checkbox {
   display: block;

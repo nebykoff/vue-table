@@ -1,5 +1,9 @@
 module.exports = {
-  configureWebpack: {
-
-  }
-}
+  css: {
+    loaderOptions: {
+      sass: {
+        prependData: '@import "@/assets/styles/variables.scss";',
+      },
+    },
+  },
+};
