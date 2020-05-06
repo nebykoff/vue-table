@@ -42,12 +42,16 @@
             <th>
               <Checkbox @change="selectAllProducts($event.target.checked)"/>
             </th>
-            <th v-for="col in columns"
+            <th v-for="(col, idx) in columns"
                 :key="col.id"
                 @click="onTableHeadClick(col.id)"
                 :class="[!col.show ? 'hide' : '',
                 col.id === getSortingCol().id ? 'sort' : '']">
-              {{ col.title }}
+              <div>
+                {{ col.title }}
+                <img v-if="!idx" src="@/assets/img/arrow-up.svg" alt=""
+                     :class="[!sortASC ? 'rotate180' : '']">
+              </div>
             </th>
             <th>
             </th>
@@ -76,7 +80,7 @@
       </table>
       <ConfirmBox :params="confirmBoxParams" v-show="confirmBoxParams.show"
                   @onDeleteConfirmed="onDeleteConfirmed">
-        Are you sure want to <strong>delete item</strong>?
+        Are you sure you want to <strong>delete item</strong>?
       </ConfirmBox>
     </div>
     <div v-else>

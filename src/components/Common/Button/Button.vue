@@ -18,7 +18,7 @@ export default {
     background-color: $clr_accent;
     color: #FFFFFF;
     border-radius: 2px;
-    padding: 0 16px;
+    padding: 8px 16px;
 
     &:disabled {
       border: 1px solid #C6CBD4;
@@ -31,10 +31,17 @@ export default {
       display: flex;
       color: #5B5E77;
       background-color: transparent;
+      padding: 0;
 
       img {
         margin-right: 5px;
       }
+    }
+
+    &--light {
+      border: 1px solid #C6CBD4;
+      background-color: #FFFFFF;
+      color: #5B5E77;
     }
   }
 </style>

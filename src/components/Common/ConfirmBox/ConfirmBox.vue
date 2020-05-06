@@ -3,15 +3,20 @@
     <div class="confirm__text">
       <slot></slot>
     </div>
-    <button @click="params.show = false">Cancel</button>
-    <button @click="onConfirm">Confirm</button>
+    <Button class="button--light" @click="params.show = false">Cancel</Button>
+    <Button @click="onConfirm">Confirm</Button>
   </div>
 </template>
 
 <script>
+import Button from '@/components/Common/Button/Button.vue';
+
 export default {
   name: 'ConfirmBox',
   props: ['params'],
+  components: {
+    Button,
+  },
   methods: {
     onConfirm() {
       this.params.show = false;
@@ -40,11 +45,23 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .confirm {
+    padding: 16px;
     position: absolute;
-    border: 1px solid magenta;
     display: inline-block;
     background-color: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+    border-radius: 4px;
+    text-align: center;
+
+    &__text {
+      margin-bottom: 8px;
+    }
+
+    .button {
+      margin: 0 8px;
+      border-radius: 4px;
+    }
   }
 </style>

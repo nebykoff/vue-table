@@ -31,14 +31,13 @@
         .button--del {
           visibility: hidden;
         }
-      }
 
+        &:hover {
+          background-color: #edf8ef;
 
-      tr:hover {
-        background-color: #edf8ef;
-
-        .button--del {
-          visibility: visible;
+          .button--del {
+            visibility: visible;
+          }
         }
       }
     }
@@ -50,6 +49,19 @@
 
       &:nth-child(2) {
         color: $clr_accent;
+
+        div {
+          display: flex;
+        }
+
+        img {
+          width: 24px;
+          height: 24px;
+
+          &.rotate180 {
+            transform: rotate(180deg);
+          }
+        }
       }
     }
 
