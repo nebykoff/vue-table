@@ -10,6 +10,7 @@
     margin: 16px 0 20px;
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
   }
 
   &__sorting {
@@ -75,6 +76,45 @@
         padding-top: 0;
         padding-right: 10px;
       }
+    }
+  }
+
+  .multiselect {
+    width: auto;
+    margin: 0 20px;
+    min-height: auto;
+    height: 34px;
+
+    &__single {
+      font-size: 14px;
+    }
+
+    &__option--highlight {
+      background-color: $clr_accent;
+    }
+
+    &__select {
+      height: 34px;
+      width: 30px;
+
+      &:before{
+        background: url("~@/assets/img/galka.svg");
+        width: 24px;
+        height: 24px;
+        display: block;
+        top: 0;
+        right: 5px;
+        margin-top: 0;
+        border: none;
+      }
+    }
+
+    &__tags {
+      min-height: auto;
+      height: 34px;
+      border-radius: 2px;
+      border: 1px solid $clr_border;
+      padding: 5px 26px 0 8px;
     }
   }
 }

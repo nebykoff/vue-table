@@ -19,11 +19,14 @@
               @click="onDelete($event.target, selectedProducts)">
         Delete {{ selectedProducts.length ? `(${selectedProducts.length})` : ''}}
       </Button>
-      <select :v-model="productsPerPage" @change="changeProductsPerPage">
-        <option value="10">10 Per Page</option>
-        <option value="15">15 Per Page</option>
-        <option value="20">20 Per Page</option>
-      </select>
+      <multiselect v-model="selectedByDefault" :options="pagesSelectOptions"
+                   label="name"
+                   placeholder="Select one"
+                   :searchable="false"
+                   :allow-empty="false"
+                   :showLabels="false"
+                   @select="changeProductsPerPage"
+      ></multiselect>
       <Pagination :interval="startFrom + 1 + '-' + endInterval"
         :total="totalProducts"
         @next="nextPage()"
@@ -101,7 +104,7 @@ import DropDownList from '@/components/Common/DropDownList/DropDownList.vue';
 import Checkbox from '@/components/Common/Checkbox/Checkbox.vue';
 import ConfirmBox from '@/components/Common/ConfirmBox/ConfirmBox.vue';
 import Button from '@/components/Common/Button/Button.vue';
-
+import Multiselect from 'vue-multiselect';
 
 export default {
   name: 'Table',
@@ -111,6 +114,7 @@ export default {
     Pagination,
     DropDownList,
     Checkbox,
+    Multiselect,
   },
   created() {
     this.columns = [...this.initColumns];
@@ -140,21 +144,24 @@ export default {
         parentRect: null,
       },
       productsToDelete: [],
-      xxx: 111,
-      productsPerPageData: [
+      pagesSelectOptions: [
         {
-          label: '10 Per Page',
-          value: 10,
+          name: '10 Per Page',
+          pages: 10,
         },
         {
-          label: '15 Per Page',
-          value: 15,
+          name: '15 Per Page',
+          pages: 15,
         },
         {
-          label: '20 Per Page',
-          value: 20,
+          name: '20 Per Page',
+          pages: 20,
         },
       ],
+      selectedByDefault: {
+        name: '10 Per Page',
+        pages: 10,
+      },
       initColumns: [
         {
           id: 1,
@@ -243,10 +250,8 @@ export default {
     updateProducts() {
       this.products = this.getProductsPiece(this.productsPerPage, this.startFrom);
     },
-    changeProductsPerPage(evt) {
-      console.log('xxx');
-
-      this.productsPerPage = +evt.target.value;
+    changeProductsPerPage(selected) {
+      this.productsPerPage = +selected.pages;
       this.updateProducts();
     },
     onTableHeadClick(id) {
@@ -338,6 +343,6 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   @import "TableUI";
 </style>
