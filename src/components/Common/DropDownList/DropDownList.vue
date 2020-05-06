@@ -1,8 +1,8 @@
 <template>
   <div class="list">
-    <button @click="showList = !showList">
+    <Button class="button--light button--list" @click="showList = !showList">
       <slot v-bind:selectedColumns="selectedColumns"></slot>
-    </button>
+    </Button>
     <div class="drop-down" v-show="showList">
       <ul>
         <li>
@@ -24,11 +24,13 @@
 
 <script>
 import Checkbox from '@/components/Common/Checkbox/Checkbox.vue';
+import Button from '@/components/Common/Button/Button.vue';
 
 export default {
   name: 'DropDownList',
   components: {
     Checkbox,
+    Button,
   },
   props: {
     columns: {
@@ -83,6 +85,7 @@ export default {
     .drop-down {
       padding: 20px 17px;
       position: absolute;
+      margin-top: 15px;
       background: #FFFFFF;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
       border-radius: 4px;

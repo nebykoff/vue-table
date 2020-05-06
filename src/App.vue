@@ -23,7 +23,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   padding: 32px 16px;
-  max-width: 1102px;
+  max-width: 1140px;
   margin: 0 auto;
 }
 </style>

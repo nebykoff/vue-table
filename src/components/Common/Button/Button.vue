@@ -43,5 +43,20 @@ export default {
       background-color: #FFFFFF;
       color: #5B5E77;
     }
+
+    &--list {
+      padding-right: 25px;
+      position: relative;
+
+      &:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: url("~@/assets/img/galka.svg") center center;
+        width: 24px;
+        height: 32px;
+      }
+    }
   }
 </style>

@@ -10,12 +10,23 @@
     margin: 16px 0 20px;
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
     align-items: center;
   }
 
   &__sorting {
     display: flex;
     align-items: center;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    > * {
+      margin-left: 16px;
+    }
   }
 
   table {
@@ -81,7 +92,6 @@
 
   .multiselect {
     width: auto;
-    margin: 0 20px;
     min-height: auto;
     height: 34px;
 

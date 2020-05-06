@@ -15,28 +15,32 @@
           </Button>
         </div>
       </div>
-      <Button :disabled="!selectedProducts.length"
-              @click="onDelete($event.target, selectedProducts)">
-        Delete {{ selectedProducts.length ? `(${selectedProducts.length})` : ''}}
-      </Button>
-      <multiselect v-model="selectedByDefault" :options="pagesSelectOptions"
-                   label="name"
-                   placeholder="Select one"
-                   :searchable="false"
-                   :allow-empty="false"
-                   :showLabels="false"
-                   @select="changeProductsPerPage"
-      ></multiselect>
-      <Pagination :interval="startFrom + 1 + '-' + endInterval"
-        :total="totalProducts"
-        @next="nextPage()"
-        @prev="prevPage()"
-      />
-      <DropDownList v-slot="slotProps" :columns="columns"
-                    @onSelectAll="onSelectAllCols"
-                    @colShowChanged="onColShowChanged">
-        {{ slotProps.selectedColumns }} columns selected
-      </DropDownList>
+      <div class="table-ui__actions">
+        <Button :disabled="!selectedProducts.length"
+                @click="onDelete($event.target, selectedProducts)">
+          Delete {{ selectedProducts.length ? `(${selectedProducts.length})` : ''}}
+        </Button>
+        <multiselect v-model="selectedByDefault" :options="pagesSelectOptions"
+                     label="name"
+                     placeholder="Select one"
+                     :searchable="false"
+                     :allow-empty="false"
+                     :showLabels="false"
+                     @select="changeProductsPerPage"
+        ></multiselect>
+        <Pagination :interval="startFrom + 1 + '-' + endInterval"
+          :total="totalProducts"
+          :first="isFirstPage"
+          :last="isLastPage"
+          @next="nextPage()"
+          @prev="prevPage()"
+        />
+        <DropDownList v-slot="slotProps" :columns="columns"
+                      @onSelectAll="onSelectAllCols"
+                      @colShowChanged="onColShowChanged">
+          {{ slotProps.selectedColumns }} columns selected
+        </DropDownList>
+      </div>
     </div>
     <div class="table-ui__table" v-if="!loadError">
       <table>
@@ -298,7 +302,7 @@ export default {
 
         this.updateProducts();
       }).catch((e) => {
-        console.log(e);
+        this.$alert(e.toString());
       }).finally(() => {
         this.loading = false;
       });
@@ -338,6 +342,12 @@ export default {
         return this.startFrom + this.productsPerPage;
       }
       return this.totalProducts;
+    },
+    isFirstPage() {
+      return this.startFrom === 0;
+    },
+    isLastPage() {
+      return this.endInterval === this.totalProducts;
     },
   },
 };

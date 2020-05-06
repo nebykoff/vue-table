@@ -44,7 +44,7 @@ export default new Vuex.Store({
         await deleteProducts();
         commit('delProducts', { productsList });
       } catch (e) {
-        console.log(e);
+        throw new Error(e.error);
       }
     },
   },
