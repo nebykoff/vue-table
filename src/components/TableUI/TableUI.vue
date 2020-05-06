@@ -8,7 +8,7 @@
         <strong>Sorting by:</strong>
         <div class="product-props" v-if="initColumns">
           <Button :class="['product-prop',
-          col.id === getSortingCol().id ? 'active' : '', isHide(col.id) ? 'hide' : '']"
+          col.id === getSortingCol().id ? 'active' : '', isColHide(col.id) ? 'hide' : '']"
                v-for="col in initColumns" :key="col.id"
                @click="changeSortCol(col.id)">
             {{ col.title }}
@@ -225,7 +225,7 @@ export default {
       this.columns.move(colIndex, 0);
       this.sort();
     },
-    isHide(id) {
+    isColHide(id) {
       return !this.columns.filter((col) => col.id === id)[0].show;
     },
     prevPage() {
